@@ -1,0 +1,144 @@
+#
+# Usage:
+#   g4bl range-counter.in [particle=<particle>] [runnum=<runnumber>] [datadir=<datadir>] \
+#                         [first=<firstEvent>] [last=<lastEvent>]
+#
+#
+#   layers of 'detector'.
+#
+
+###  !!!  SET THE FOLLOWING PARAMETERS IN THE COMMAND LINE !!!
+###  "runnum"     ... description of the condition, purpose of the study, etc.  ( Default="r")
+###  "datadir"    ... directory of output files ( Default=".")
+###  "first"      ... the first event in the gunfile to be analyzed
+###  "last"       ... the last event in the gunfile to be analyzed
+
+param pi=3.141592653
+param deg2rad=$pi/180.
+
+#param -unset particle=mu-
+param -unset momentum=80
+param -unset hour=1
+param -unset absorberlength=0.5
+param -unset degraderlength=40
+param -unset datadir=data/Simulation/Absorber$absorberlength
+#param -unset datadir=data/Sample
+param -unset first=0
+param -unset material=Cu
+param -unset pid=13
+
+
+if $pid==13
+   param -unset particle=mu-
+   #param -unset gunfile=python/flat_mu_beam_gunfile.txt
+   param -unset gunfile=python/mu_beam_1-hour_gunfile.txt			
+   #param -unset last=16000000			
+   #param -unset last=100000
+   param -unset last=10
+elseif $pid==-13
+   param -unset particle=mu+
+   param -unset gunfile=python/anti_mu_beam_1-hour_gunfile.txt
+   #param -unset last=377600
+   #param -unset last=100000
+   param -unset last=10						
+elseif $pid==211
+   param -unset particle=pi+
+   param -unset gunfile=python/posi_pi_beam_1-hour_gunfile.txt
+   #param -unset last=14080
+   #param -unset last=100000
+   param -unset last=10   
+endif
+
+#param histoFile=$datadir/range-counter-$particle-$runnum-$first-$last.root
+param histoFile=$datadir/Range-counter-hour$hour-degrader$degraderlength[mm]-$particle-in$material.root
+
+param -unset kill=1
+param -unset detcolor=0,1,0
+param -unset hbcolor=0.6,0,0
+param -unset inside=0
+
+start x=0.0 y=0.0 z=0.0 radiusCut=1000.0
+
+# Beam
+#
+
+#beam rectangular particle=$particle meanMomentum=75. \
+#     firstEvent=$first lastEvent=$last \
+#     beamZ=-110. beamX=0. beamY=0. sigmaX=0.0 sigmaY=0.0 \
+#     sigmaXp=0. sigmaYp=0. sigmaP=-65. meanT=0.0 sigmaT=0.0
+#beam rectangular particle=$particle meanMomentum=75. \
+#     firstEvent=$first lastEvent=$last \
+#     beamZ=-110. beamX=0. beamY=0. sigmaX=0.0 sigmaY=0.0 \
+#     sigmaXp=0. sigmaYp=0. sigmaP=0. meanT=0.0 sigmaT=0.0
+# beam rectangular particle=$particle meanMomentum=$momentum \
+#      firstEvent=$first lastEvent=$last \
+#      beamZ=-2000. beamX=0. beamY=0. sigmaX=0.0 sigmaY=0.0 \
+#      sigmaXp=0. sigmaYp=0. sigmaP=0 meanT=0.0 sigmaT=0.0
+beam ascii beamZ=-100. beamX=0. beamY=0. firstEvent=$first lastEvent=$last filename=$gunfile
+
+#physics LHEP
+#physics QGSP_BERT_HP disable=msc
+physics QGSP_BERT_HP
+#trackcuts kineticEnergyCut=9.0 kill=nu_e,anti_nu_e,nu_mu,anti_nu_mu,nu_tau,anti_nu_tau
+#trackcuts kill=nu_e,anti_nu_e,nu_mu,anti_nu_mu,nu_tau,anti_nu_tau
+param worldMaterial=Vacuum
+param deltaChord=0.01
+param deltaIntersection=0.01
+particlecolor pi+=1,0,0 pi-=0.5,0,0 mu+=0,1,0 mu-=1,0,0 e+=0,0,1 e-=0,0,0.5 gamma=0.5,0.5,0.5 proton=1,1,0 alpha=0.5,0.5,0 neutron=0,0.5,0.5
+
+
+#
+# material
+#
+material H A=1 Z=1 density=0.00008988
+material C A=12.01 Z=6 density=2.1
+material N A=14.01 Z=7 density=0.001251
+material O A=16.00 Z=8 density=0.001429
+material kapton  density=1.42 H,0.026362 C,0.691133 N,0.073270 O,0.209235
+material gHe A=4.002602 Z=2 density=0.0000001786
+
+# polyvinyltoluene = [CH2CH]n
+material polyvinyltoluene  density=1.03 H,0.111111 C,0.888889
+
+param mat_spect=Vacuum
+
+#
+# Volumes
+#
+
+box degrader height=500 width=500 length=$degraderlength material=C kill=0 color=1,0,0
+place degrader x=0 y=0 z=0 front=1
+
+detector rcb height=500 width=500 length=0.5 material=POLYSTYRENE kill=0 perTrack=1 maxStep=0.05 filename='$histoFile'
+place rcb rename=rc0 x=0 y=0 z=$degraderlength+10 front=1
+
+box absorber height=500 width=500 length=$absorberlength material=$material kill=0 color=1,0,0
+place absorber x=0 y=0 z=$degraderlength+40 front=1
+
+detector rca height=500 width=500 length=5 material=POLYSTYRENE kill=0 perTrack=1 maxStep=0.05 filename='$histoFile'
+place rca rename=rc1 x=0 y=0 z=$degraderlength+70 front=1
+
+#detector rcc height=500 width=500 length=5 material=POLYSTYRENE kill=0 perTrack=1 maxStep=0.05 filename='$histoFile'
+#place rcc rename=rc2 x=0 y=0 z=$degraderlength+85 front=1
+
+
+#
+# virtual detectors
+#
+
+virtualdetector bm1 radius=1000. length=1 material=Vacuum color=0,0,.6 \
+                filename='$histoFile' coordinates=centerline format=root
+place bm1 z=-50.
+
+virtualdetector bm2 radius=1000. length=1 material=Vacuum color=0,0,.6 \
+                filename='$histoFile' coordinates=centerline format=root
+place bm2 z=$degraderlength+25.
+
+virtualdetector bm3 radius=1000. length=1 material=Vacuum color=0,0,.6 \
+                filename='$histoFile' coordinates=centerline format=root
+place bm3 z=$degraderlength+$absorberlength+50.
+
+
+#zntuple zloop=0:100:1 filename='$histoFile' coordinates=centerline format=root
+beamlossntuple blnt filename='$histoFile' coordinates=centerline format=root
+newparticlentuple NP filename='$histoFile' coordinates=centerline format=root
