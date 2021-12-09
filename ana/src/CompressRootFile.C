@@ -194,7 +194,7 @@ int main(int argc, char** argv){
   InputFile = new TFile(fname.data());
   OutputFile = new TFile(fout.data(),"RECREATE");
   cout << "Open " << fname << "."<< endl;
-  cout << "Remove nuetrinos and anti-nietrinos from tree." << endl;
+  cout << "Remove nuetrinos and anti-nuetrinos from tree." << endl;
   // Detectorのtreeをセット
   for(int i=0; i<det_count; ++i){
     DetectorTree[i] = (TTree*)InputFile->Get(Form("Detector/rc%d",i));
@@ -313,7 +313,7 @@ int main(int argc, char** argv){
   }
   newparticlentupletree -> Write();
  next1:
-  cout << "NTuple/NP doesn't exist." << endl;
+  //cout << "NTuple/NP doesn't exist." << endl;
 
   //beamlossntupleのtreeセット
   BeamLossTree = (TTree*)InputFile->Get("NTuple/blnt");
@@ -351,7 +351,7 @@ int main(int argc, char** argv){
   }
   beamlossntupletree -> Write();
  next2:
-  cout << "NTuple/blnt doesn't exist." << endl;
+  //cout << "NTuple/blnt doesn't exist." << endl;
 
   
   InputFile -> Close();
@@ -359,4 +359,3 @@ int main(int argc, char** argv){
   cout << "Close " << fout << "."<< endl;
   return 0;
 }
-
