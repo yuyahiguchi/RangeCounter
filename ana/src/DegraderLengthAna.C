@@ -275,11 +275,11 @@ int main(int argc, char** argv){
       //#######
 
       Layer1 -> SetEventInfo(ev);
-      if(Layer1->GetNumOfHit() >= 2){
+      if(Layer1->GetEntries() >= 2){
 	continue;
       }
 
-      if(Layer1->GetNumOfHit() == 0 ){
+      if(Layer1->GetEntries() == 0 ){
 	continue;
       }
       t1 = Layer1 -> Get_t(0);
@@ -289,10 +289,10 @@ int main(int argc, char** argv){
       //#######
 
       Layer2 -> SetEventInfo(ev);
-      if(Layer2 -> GetNumOfHit() != 0){
+      if(Layer2 -> GetEntries() != 0){
 	t2 = Layer2 -> Get_t(0);
       }
-      if(Layer2 -> GetNumOfHit() >= 2){
+      if(Layer2 -> GetEntries() >= 2){
 	continue;
       }
       
@@ -301,10 +301,10 @@ int main(int argc, char** argv){
       //#######
       
       Layer3 -> SetEventInfo(ev);
-      if(ini_particle=="pi+" && Layer3 -> GetNumOfHit() >= 3){
+      if(ini_particle=="pi+" && Layer3 -> GetEntries() >= 3){
 	PionStopMomentumLayer3[degraderID[degraderlength]] -> Fill(ini_momentum);
       }
-      if(Layer3 -> GetNumOfHit() >= 3){
+      if(Layer3 -> GetEntries() >= 3){
 	numofPion++;
       }
       
@@ -313,7 +313,7 @@ int main(int argc, char** argv){
       /////////////////////
       if( t1!=0 && t2!=0 && t1<5 && (t2-t1>1.5) ){
 	IsFill = false;
-	for(size_t j=0; j<Layer2->GetNumOfHit();++j){
+	for(size_t j=0; j<Layer2->GetEntries();++j){
 	  if(Layer2->Get_t(j)>t1 && Layer2->Get_Edep(j)>0.05 /*&& !InContainer(remove,Layer2->GetNthTime(j))*/){
 	    layer1_and_not2[4*degraderID[degraderlength]+particleNo[ini_particle]]->Fill(Layer2->Get_t(j)-t1);
 	    decay_spectrum[degraderID[degraderlength]]->Fill(Layer2->Get_t(j)-t1);

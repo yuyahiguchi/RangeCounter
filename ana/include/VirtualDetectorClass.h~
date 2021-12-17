@@ -66,7 +66,7 @@ VirtualDetector::VirtualDetector(TFile *file, const char *treename){
 }
 
 
-inline void VirtualDetector::SetEventInfo(ULong64_t ev){
+void VirtualDetector::SetEventInfo(ULong64_t ev){
   this -> Clear();
   for(; iRow<nRow; ++iRow){
     tree -> GetEntry(iRow);
@@ -94,85 +94,85 @@ inline void VirtualDetector::SetEventInfo(ULong64_t ev){
 }
 
 
-inline ULong64_t VirtualDetector::GetTotalEvent(){
+ULong64_t VirtualDetector::GetTotalEvent(){
   tree -> GetEntry(nRow-1);
   return EventID_1+1;
 }
 
 
-inline size_t VirtualDetector::GetEntries(){
+size_t VirtualDetector::GetEntries(){
   return PDGid.size();
 }
 
 
-inline float VirtualDetector::Get_x(int n=-1){
+float VirtualDetector::Get_x(int n=-1){
   int m = (n==-1) ? entry : n;
   return x[m];
 }
 
-inline float VirtualDetector::Get_y(int n=-1){
+float VirtualDetector::Get_y(int n=-1){
   int m = (n==-1) ? entry : n;
   return y[m];
 }
 
-inline float VirtualDetector::Get_z(int n=-1){
+float VirtualDetector::Get_z(int n=-1){
   int m = (n==-1) ? entry : n;
   return z[m];
 }
 
-inline float VirtualDetector::Get_Px(int n=-1){
+float VirtualDetector::Get_Px(int n=-1){
   int m = (n==-1) ? entry : n;
   return Px[m];
 }
 
-inline float VirtualDetector::Get_Py(int n=-1){
+float VirtualDetector::Get_Py(int n=-1){
   int m = (n==-1) ? entry : n;
   return Py[m];
 }
 
-inline float VirtualDetector::Get_Pz(int n=-1){
+float VirtualDetector::Get_Pz(int n=-1){
   int m = (n==-1) ? entry : n;
   return Pz[m];
 }
 
-inline float VirtualDetector::Get_t(int n=-1){
+float VirtualDetector::Get_t(int n=-1){
   int m = (n==-1) ? entry : n;
   return t[m];
 }
 
-inline float VirtualDetector::Get_PDGid(int n=-1){
+float VirtualDetector::Get_PDGid(int n=-1){
   int m = (n==-1) ? entry : n;
   return PDGid[m];
 }
 
-inline float VirtualDetector::Get_EventID(int n=-1){
+float VirtualDetector::Get_EventID(int n=-1){
   int m = (n==-1) ? entry : n;
   return EventID[m];
 }
 
-inline float VirtualDetector::Get_ParentID(int n=-1){
+float VirtualDetector::Get_ParentID(int n=-1){
   int m = (n==-1) ? entry : n;
   return ParentID[m];
 }
 
-inline float VirtualDetector::Get_TrackID(int n=-1){
+float VirtualDetector::Get_TrackID(int n=-1){
   int m = (n==-1) ? entry : n;
   return TrackID[m];
 }
 
 
-inline bool VirtualDetector::InPDGid(float x){
+bool VirtualDetector::InPDGid(float x){
   return InContainer(PDGid,x);
 }
 
 
-inline bool VirtualDetector::InParentID(float x){
+bool VirtualDetector::InParentID(float x){
   return InContainer(ParentID,x);
 }
 
 
 
-inline void VirtualDetector::Clear(){
+void VirtualDetector::Clear(){
   x.clear();
   y.clear();
   z.clear();
@@ -188,14 +188,14 @@ inline void VirtualDetector::Clear(){
 
 
 
-inline VirtualDetector* VirtualDetector::SetInitialInfo(){
+VirtualDetector* VirtualDetector::SetInitialInfo(){
   auto itr = find(ParentID.begin(), ParentID.end(),0);
   entry = distance(ParentID.begin(), itr);
   return this;
 }
 
 
-inline VirtualDetector* VirtualDetector::SetNthEntry(int n){
+VirtualDetector* VirtualDetector::SetNthEntry(int n){
   entry = n;
   return this;
 }
